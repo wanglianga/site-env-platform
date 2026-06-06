@@ -1,0 +1,13 @@
+**/node_modules/
+**/dist/
+**/target/
+**/.git/
+**/.idea/
+**/.vscode/
+**/*.iml
+**/*.ipr
+**/*.iws
+**/logs/
+**/*.log
+**/.DS_Store
+**/npm-debug.log*
