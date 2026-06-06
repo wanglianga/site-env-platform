@@ -51,8 +51,20 @@ public class DustReadingController {
     }
 
     @GetMapping("/overlimit")
-    public Result<List<DustReading>> getOverlimit() {
-        return Result.success(service.getOverlimitReadings());
+    public Result<?> getOverlimit(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return Result.success(service.getOverlimitPaged(page, size));
+    }
+
+    @GetMapping("/stats")
+    public Result<?> getStats(@RequestParam(required = false) Long siteId) {
+        return Result.success(service.getStats(siteId));
+    }
+
+    @GetMapping("/trend")
+    public Result<?> getTrend(@RequestParam(required = false) Long siteId) {
+        return Result.success(service.getTrend(siteId));
     }
 
     @PostMapping

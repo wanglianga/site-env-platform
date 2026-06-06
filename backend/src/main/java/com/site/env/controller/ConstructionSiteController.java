@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sites")
+@RequestMapping({"/api/sites", "/api/construction-sites"})
 @CrossOrigin(origins = "*")
 public class ConstructionSiteController {
 

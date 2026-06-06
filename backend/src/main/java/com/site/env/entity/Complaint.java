@@ -1,10 +1,8 @@
 package com.site.env.entity;
 
-import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "complaint")
 public class Complaint {
@@ -56,5 +54,117 @@ public class Complaint {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Long siteId) {
+        this.siteId = siteId;
+    }
+
+    public String getComplainant() {
+        return complainant;
+    }
+
+    public void setComplainant(String complainant) {
+        this.complainant = complainant;
+    }
+
+    public String getComplainantPhone() {
+        return complainantPhone;
+    }
+
+    public void setComplainantPhone(String complainantPhone) {
+        this.complainantPhone = complainantPhone;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getScreenshotUrl() {
+        return screenshotUrl;
+    }
+
+    public void setScreenshotUrl(String screenshotUrl) {
+        this.screenshotUrl = screenshotUrl;
+    }
+
+    public ComplaintStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ComplaintStatus status) {
+        this.status = status;
+    }
+
+    public String getHandler() {
+        return handler;
+    }
+
+    public void setHandler(String handler) {
+        this.handler = handler;
+    }
+
+    public LocalDateTime getDispatchedAt() {
+        return dispatchedAt;
+    }
+
+    public void setDispatchedAt(LocalDateTime dispatchedAt) {
+        this.dispatchedAt = dispatchedAt;
+    }
+
+    public LocalDateTime getProcessedAt() {
+        return processedAt;
+    }
+
+    public void setProcessedAt(LocalDateTime processedAt) {
+        this.processedAt = processedAt;
+    }
+
+    public LocalDateTime getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(LocalDateTime closedAt) {
+        this.closedAt = closedAt;
+    }
+
+    public String getProcessResult() {
+        return processResult;
+    }
+
+    public void setProcessResult(String processResult) {
+        this.processResult = processResult;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

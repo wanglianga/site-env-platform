@@ -50,13 +50,63 @@ const Dashboard = () => {
         params.startTime = dateRange[0]?.format('YYYY-MM-DD')
         params.endTime = dateRange[1]?.format('YYYY-MM-DD')
       }
-      await Promise.all([
-        api.getDustReadingStats(params).catch(() => {}),
-        api.getDustReadingTrend(params).catch(() => {}),
-        api.getOverlimitAlerts({ ...params, page: 1, size: 10 }).catch(() => {}),
+      const [sitesResp, trendResp, overResp] = await Promise.all([
+        api.getConstructionSites().catch(() => null),
+        api.getDustReadingTrend(params).catch(() => null),
+        api.getOverlimitAlerts({ ...params, page: 1, size: 10 }).catch(() => null),
       ])
+      if (sitesResp && sitesResp.code === 200 && sitesResp.data) {
+        const sites = sitesResp.data
+        const statsPromises = sites.map(async (s) => {
+          try {
+            const r = await api.getDustReadingStats({ siteId: s.id })
+            const d = (r && r.data) || {}
+            const pm25 = d.pm25Avg || 0
+            const pm10 = d.pm10Avg || 0
+            const tsp = d.tspAvg || 0
+            let status = 'normal'
+            if (pm25 > 75 || pm10 > 150 || tsp > 300) status = 'overlimit'
+            else if (pm25 > 55 || pm10 > 110 || tsp > 220) status = 'warning'
+            return { siteId: s.id, siteName: s.name, pm25, pm10, tsp, status }
+          } catch {
+            return { siteId: s.id, siteName: s.name, pm25: 0, pm10: 0, tsp: 0, status: 'normal' }
+          }
+        })
+        const newStats = await Promise.all(statsPromises)
+        if (newStats.length) setStats(newStats)
+      }
+      if (trendResp && trendResp.code === 200 && trendResp.data && trendResp.data.times) {
+        setTrendData({
+          times: trendResp.data.times,
+          pm25: trendResp.data.pm25 || [],
+          pm10: trendResp.data.pm10 || [],
+          tsp: trendResp.data.tsp || [],
+        })
+      }
+      if (overResp && overResp.code === 200 && overResp.data && overResp.data.list) {
+        const newAlerts = overResp.data.list.map((r) => {
+          const pm25Over = r.pm25 != null && r.pm25 > 75
+          const pm10Over = r.pm10 != null && r.pm10 > 150
+          const tspOver = r.tsp != null && r.tsp > 300
+          let type = 'PM2.5', value = r.pm25 || 0, limit = 75
+          if (pm25Over) { type = 'PM2.5'; value = r.pm25; limit = 75 }
+          else if (pm10Over) { type = 'PM10'; value = r.pm10; limit = 150 }
+          else if (tspOver) { type = 'TSP'; value = r.tsp; limit = 300 }
+          const level = (type === 'PM2.5' && value > 100) || (type === 'PM10' && value > 200) || (type === 'TSP' && value > 400) ? '严重' : '警告'
+          return {
+            id: r.id,
+            siteName: '工地#' + r.siteId,
+            type,
+            value,
+            limit,
+            time: r.readingTime,
+            level,
+          }
+        })
+        if (newAlerts.length) setAlerts(newAlerts)
+      }
     } catch (e) {
-      console.log('Using mock data')
+      console.log('Using mock data:', e?.message)
     } finally {
       setLoading(false)
     }

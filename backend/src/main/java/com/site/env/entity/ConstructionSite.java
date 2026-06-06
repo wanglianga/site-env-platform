@@ -1,10 +1,8 @@
 package com.site.env.entity;
 
-import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "construction_site")
 public class ConstructionSite {
@@ -47,5 +45,101 @@ public class ConstructionSite {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getConstructionUnit() {
+        return constructionUnit;
+    }
+
+    public void setConstructionUnit(String constructionUnit) {
+        this.constructionUnit = constructionUnit;
+    }
+
+    public String getResponsiblePerson() {
+        return responsiblePerson;
+    }
+
+    public void setResponsiblePerson(String responsiblePerson) {
+        this.responsiblePerson = responsiblePerson;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getEnclosureStatus() {
+        return enclosureStatus;
+    }
+
+    public void setEnclosureStatus(String enclosureStatus) {
+        this.enclosureStatus = enclosureStatus;
+    }
+
+    public String getSprinklerStatus() {
+        return sprinklerStatus;
+    }
+
+    public void setSprinklerStatus(String sprinklerStatus) {
+        this.sprinklerStatus = sprinklerStatus;
+    }
+
+    public String getRectificationManager() {
+        return rectificationManager;
+    }
+
+    public void setRectificationManager(String rectificationManager) {
+        this.rectificationManager = rectificationManager;
+    }
+
+    public String getManagerPhone() {
+        return managerPhone;
+    }
+
+    public void setManagerPhone(String managerPhone) {
+        this.managerPhone = managerPhone;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

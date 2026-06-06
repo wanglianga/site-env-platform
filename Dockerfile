@@ -1,4 +1,4 @@
-FROM maven:3.8.6-openjdk-8-slim AS backend-builder
+FROM maven:3.9-eclipse-temurin-17 AS backend-builder
 WORKDIR /backend
 COPY backend/pom.xml .
 RUN mvn dependency:go-offline -B

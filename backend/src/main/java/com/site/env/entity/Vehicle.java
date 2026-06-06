@@ -1,10 +1,8 @@
 package com.site.env.entity;
 
-import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "vehicle")
 public class Vehicle {
@@ -45,5 +43,85 @@ public class Vehicle {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Long siteId) {
+        this.siteId = siteId;
+    }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getTransportTeam() {
+        return transportTeam;
+    }
+
+    public void setTransportTeam(String transportTeam) {
+        this.transportTeam = transportTeam;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public LocalDateTime getLoadTime() {
+        return loadTime;
+    }
+
+    public void setLoadTime(LocalDateTime loadTime) {
+        this.loadTime = loadTime;
+    }
+
+    public WashStatus getWashStatus() {
+        return washStatus;
+    }
+
+    public void setWashStatus(WashStatus washStatus) {
+        this.washStatus = washStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
