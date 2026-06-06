@@ -32,8 +32,8 @@ export const api = {
   getRectificationTask: (id) => request.get(`/rectification-tasks/${id}`),
   createRectificationTask: (data) => request.post('/rectification-tasks', data),
   updateRectificationTask: (id, data) => request.put(`/rectification-tasks/${id}`, data),
-  submitRectification: (id, data) => request.post(`/rectification-tasks/${id}/submit`, data),
-  reviewRectification: (id, data) => request.post(`/rectification-tasks/${id}/review`, data),
+  submitRectification: (id, data) => request.put(`/rectification-tasks/${id}/submit`, data),
+  reviewRectification: (id, passed) => request.put(`/rectification-tasks/${id}/review?passed=${passed}`),
   deleteRectificationTask: (id) => request.delete(`/rectification-tasks/${id}`),
 
   getReviewEvidences: (params) => request.get('/review-evidences', { params }),
@@ -50,9 +50,9 @@ export const api = {
   getComplaints: (params) => request.get('/complaints', { params }),
   getComplaint: (id) => request.get(`/complaints/${id}`),
   createComplaint: (data) => request.post('/complaints', data),
-  dispatchComplaint: (id, data) => request.post(`/complaints/${id}/dispatch`, data),
-  processComplaint: (id, data) => request.post(`/complaints/${id}/process`, data),
-  closeComplaint: (id, data) => request.post(`/complaints/${id}/close`, data),
+  dispatchComplaint: (id, data) => request.put(`/complaints/${id}/dispatch`, data),
+  processComplaint: (id, data) => request.put(`/complaints/${id}/process`, data),
+  closeComplaint: (id) => request.put(`/complaints/${id}/close`),
   deleteComplaint: (id) => request.delete(`/complaints/${id}`),
 
   getConstructionSites: (params) => request.get('/construction-sites', { params }),
@@ -74,6 +74,10 @@ export const api = {
   deleteEarthworkPlan: (id) => request.delete(`/earthwork-plans/${id}`),
 
   getWashRecords: (params) => request.get('/wash-records', { params }),
+  getWashRecord: (id) => request.get(`/wash-records/${id}`),
+  createWashRecord: (data) => request.post('/wash-records', data),
+  confirmWash: (id) => request.put(`/wash-records/${id}/confirm`),
+  deleteWashRecord: (id) => request.delete(`/wash-records/${id}`),
 }
 
 export default request

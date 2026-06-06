@@ -6,11 +6,10 @@ import { api } from '../api'
 
 const statusMap = {
   PENDING: { color: 'orange', text: '待整改' },
-  IN_PROGRESS: { color: 'blue', text: '整改中' },
+  PROCESSING: { color: 'blue', text: '整改中' },
   SUBMITTED: { color: 'purple', text: '待复查' },
-  PASSED: { color: 'green', text: '已通过' },
-  REJECTED: { color: 'red', text: '已驳回' },
-  CANCELLED: { color: 'default', text: '已取消' },
+  REVIEWED: { color: 'green', text: '已复查' },
+  OVERDUE: { color: 'red', text: '已逾期' },
 }
 
 const typeMap = {
@@ -24,10 +23,10 @@ const typeMap = {
 
 const mockData = [
   { id: 1, siteName: '科技园B区一期', type: 'DUST', title: 'PM2.5严重超标', description: '扬尘监测点PM2.5达到120μg/m³，超出限值60%', source: '自动监测', initiator: '系统', rectificationPerson: '张三', personPhone: '13800138001', status: 'PENDING', deadline: '2026-06-08 18:00:00', createdAt: '2026-06-06 14:30:00' },
-  { id: 2, siteName: '滨江大道改造工程', type: 'WASH', title: '出场车辆未冲洗', description: '车牌京B67890出场时未经过冲洗设备', source: '车辆抓拍', initiator: '系统', rectificationPerson: '李四', personPhone: '13800138002', status: 'IN_PROGRESS', deadline: '2026-06-07 12:00:00', createdAt: '2026-06-06 09:15:00' },
+  { id: 2, siteName: '滨江大道改造工程', type: 'WASH', title: '出场车辆未冲洗', description: '车牌京B67890出场时未经过冲洗设备', source: '车辆抓拍', initiator: '系统', rectificationPerson: '李四', personPhone: '13800138002', status: 'PROCESSING', deadline: '2026-06-07 12:00:00', createdAt: '2026-06-06 09:15:00' },
   { id: 3, siteName: '中央公园A区工地', type: 'ENCLOSURE', title: '施工围挡破损', description: '南侧围挡约5米长出现破损，存在安全隐患', source: '巡查发现', initiator: '王巡查', rectificationPerson: '赵五', personPhone: '13800138003', status: 'SUBMITTED', deadline: '2026-06-07 18:00:00', createdAt: '2026-06-05 16:20:00' },
-  { id: 4, siteName: '地铁5号线施工现场', type: 'SPRINKLER', title: '喷淋设备故障', description: '东区3号喷淋设备无法正常工作', source: '设备告警', initiator: '系统', rectificationPerson: '孙六', personPhone: '13800138004', status: 'PASSED', deadline: '2026-06-05 12:00:00', createdAt: '2026-06-04 10:00:00' },
-  { id: 5, siteName: '科技园B区一期', type: 'NOISE', title: '夜间施工噪声', description: '22点后仍在进行混凝土浇筑作业', source: '投诉举报', initiator: '周边居民', rectificationPerson: '周七', personPhone: '13800138005', status: 'REJECTED', deadline: '2026-06-06 08:00:00', createdAt: '2026-06-06 07:30:00' },
+  { id: 4, siteName: '地铁5号线施工现场', type: 'SPRINKLER', title: '喷淋设备故障', description: '东区3号喷淋设备无法正常工作', source: '设备告警', initiator: '系统', rectificationPerson: '孙六', personPhone: '13800138004', status: 'REVIEWED', deadline: '2026-06-05 12:00:00', createdAt: '2026-06-04 10:00:00' },
+  { id: 5, siteName: '科技园B区一期', type: 'NOISE', title: '夜间施工噪声', description: '22点后仍在进行混凝土浇筑作业', source: '投诉举报', initiator: '周边居民', rectificationPerson: '周七', personPhone: '13800138005', status: 'OVERDUE', deadline: '2026-06-06 08:00:00', createdAt: '2026-06-06 07:30:00' },
 ]
 
 const RectificationTasks = () => {
@@ -39,9 +38,11 @@ const RectificationTasks = () => {
   const [type, setType] = useState()
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [submitModalOpen, setSubmitModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [createForm] = Form.useForm()
   const [reviewForm] = Form.useForm()
+  const [submitForm] = Form.useForm()
 
   const fetchData = async () => {
     setLoading(true)
@@ -66,29 +67,62 @@ const RectificationTasks = () => {
     try {
       const values = await createForm.validateFields()
       const payload = { ...values, deadline: values.deadline?.format('YYYY-MM-DD HH:mm:ss') }
-      await api.createRectificationTask(payload).catch(() => null)
-      message.success('整改任务创建成功')
-      setCreateModalOpen(false)
-      createForm.resetFields()
-      fetchData()
+      const res = await api.createRectificationTask(payload)
+      if (res && res.code === 200) {
+        message.success('整改任务创建成功')
+        setCreateModalOpen(false)
+        createForm.resetFields()
+        fetchData()
+      } else {
+        message.error(res?.message || '创建失败')
+      }
     } catch (e) {
       console.error(e)
+      message.error(e?.response?.data?.message || e.message || '创建失败')
+    }
+  }
+
+  const handleSubmitRectification = async () => {
+    try {
+      const values = await submitForm.validateFields()
+      if (!selectedTask) return
+      const res = await api.submitRectification(selectedTask.id, values)
+      if (res && res.code === 200) {
+        message.success('整改已提交，等待复查')
+        setSubmitModalOpen(false)
+        submitForm.resetFields()
+        fetchData()
+      } else {
+        message.error(res?.message || '提交失败')
+      }
+    } catch (e) {
+      console.error(e)
+      message.error(e?.response?.data?.message || e.message || '提交失败')
     }
   }
 
   const handleReview = async (passed) => {
     try {
-      const values = await reviewForm.validateFields()
-      if (selectedTask) {
-        await api.reviewRectification(selectedTask.id, { ...values, passed }).catch(() => null)
+      if (!selectedTask) return
+      const res = await api.reviewRectification(selectedTask.id, passed)
+      if (res && res.code === 200) {
+        message.success(passed ? '复查通过' : '已驳回，重新整改')
+        setReviewModalOpen(false)
+        reviewForm.resetFields()
+        fetchData()
+      } else {
+        message.error(res?.message || '复查失败')
       }
-      message.success(passed ? '复查通过' : '已驳回')
-      setReviewModalOpen(false)
-      reviewForm.resetFields()
-      fetchData()
     } catch (e) {
       console.error(e)
+      message.error(e?.response?.data?.message || e.message || '复查失败')
     }
+  }
+
+  const openSubmitModal = (record) => {
+    setSelectedTask(record)
+    submitForm.resetFields()
+    setSubmitModalOpen(true)
   }
 
   const openReviewModal = (record) => {
@@ -129,6 +163,9 @@ const RectificationTasks = () => {
       render: (_, record) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />}>详情</Button>
+          {(record.status === 'PENDING' || record.status === 'PROCESSING') && (
+            <Button size="small" type="primary" onClick={() => openSubmitModal(record)}>提交整改</Button>
+          )}
           {record.status === 'SUBMITTED' && (
             <Button size="small" type="primary" icon={<CheckOutlined />} onClick={() => openReviewModal(record)}>复查</Button>
           )}
@@ -236,8 +273,17 @@ const RectificationTasks = () => {
       ]}>
         <p style={{ marginBottom: 16 }}>任务：<b>{selectedTask?.title}</b></p>
         <Form form={reviewForm} layout="vertical">
-          <Form.Item name="reviewComment" label="复查意见" rules={[{ required: true }]}>
-            <Input.TextArea rows={3} placeholder="请输入复查意见" />
+          <Form.Item name="reviewComment" label="复查意见">
+            <Input.TextArea rows={3} placeholder="请输入复查意见（可选）" />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal title="提交整改" open={submitModalOpen} onOk={handleSubmitRectification} onCancel={() => setSubmitModalOpen(false)}>
+        <p style={{ marginBottom: 16 }}>任务：<b>{selectedTask?.title}</b></p>
+        <Form form={submitForm} layout="vertical">
+          <Form.Item name="remark" label="整改说明">
+            <Input.TextArea rows={3} placeholder="请输入整改情况说明（可选）" />
           </Form.Item>
         </Form>
       </Modal>

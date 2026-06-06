@@ -68,25 +68,37 @@ const Complaints = () => {
   const handleDispatch = async () => {
     try {
       const values = await dispatchForm.validateFields()
-      if (selectedComplaint) {
-        await api.dispatchComplaint(selectedComplaint.id, values).catch(() => null)
+      if (!selectedComplaint) return
+      const res = await api.dispatchComplaint(selectedComplaint.id, values)
+      if (res && res.code === 200) {
+        message.success('派单成功')
+        setDispatchModalOpen(false)
+        fetchData()
+      } else {
+        message.error(res?.message || '派单失败')
       }
-      message.success('派单成功')
-      setDispatchModalOpen(false)
-      fetchData()
-    } catch (e) { console.error(e) }
+    } catch (e) {
+      console.error(e)
+      message.error(e?.response?.data?.message || e.message || '派单失败')
+    }
   }
 
   const handleProcess = async () => {
     try {
       const values = await processForm.validateFields()
-      if (selectedComplaint) {
-        await api.processComplaint(selectedComplaint.id, values).catch(() => null)
+      if (!selectedComplaint) return
+      const res = await api.processComplaint(selectedComplaint.id, values)
+      if (res && res.code === 200) {
+        message.success('处理完成')
+        setProcessModalOpen(false)
+        fetchData()
+      } else {
+        message.error(res?.message || '处理失败')
       }
-      message.success('处理完成')
-      setProcessModalOpen(false)
-      fetchData()
-    } catch (e) { console.error(e) }
+    } catch (e) {
+      console.error(e)
+      message.error(e?.response?.data?.message || e.message || '处理失败')
+    }
   }
 
   const columns = [

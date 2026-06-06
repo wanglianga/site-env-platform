@@ -10,6 +10,7 @@ import Complaints from './pages/Complaints'
 import ConstructionSites from './pages/ConstructionSites'
 import Vehicles from './pages/Vehicles'
 import EarthworkPlans from './pages/EarthworkPlans'
+import WashRecords from './pages/WashRecords'
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="dust-monitoring" element={<Dashboard />} />
         <Route path="vehicle-records" element={<VehicleRecords />} />
         <Route path="vehicles" element={<Vehicles />} />
-        <Route path="wash-records" element={<VehicleRecords />} />
+        <Route path="wash-records" element={<WashRecords />} />
         <Route path="rectification-tasks" element={<RectificationTasks />} />
         <Route path="review-evidences" element={<ReviewEvidences />} />
         <Route path="penalties" element={<Penalties />} />
