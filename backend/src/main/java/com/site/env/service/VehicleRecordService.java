@@ -20,6 +20,9 @@ public class VehicleRecordService {
     @Autowired
     private VehicleRecordRepository vehicleRecordRepository;
 
+    @Autowired
+    private NightExcavationApprovalService nightExcavationApprovalService;
+
     public VehicleRecord create(VehicleRecord record) {
         log.info("创建车辆出入记录: plateNumber={}, type={}", record.getPlateNumber(), record.getRecordType());
         checkNightViolation(record);
@@ -30,6 +33,26 @@ public class VehicleRecordService {
         LocalDateTime time = record.getRecordTime() != null ? record.getRecordTime() : LocalDateTime.now();
         int hour = time.getHour();
         boolean isNight = hour >= 22 || hour < 6;
+
+        if (!isNight) {
+            record.setIsNightViolation(false);
+            return;
+        }
+
+        if (record.getRecordType() == RecordType.OUT && record.getSiteId() != null) {
+            boolean allowed = nightExcavationApprovalService.isVehicleAllowed(
+                    record.getSiteId(), record.getPlateNumber(), time);
+            if (allowed) {
+                log.info("夜间出场合规: plateNumber={}, siteId={}, time={}",
+                        record.getPlateNumber(), record.getSiteId(), time);
+                record.setIsNightViolation(false);
+                return;
+            } else {
+                log.warn("夜间出场违规核查触发: plateNumber={}, siteId={}, time={} - 无有效审批或超时或不在车辆清单",
+                        record.getPlateNumber(), record.getSiteId(), time);
+            }
+        }
+
         record.setIsNightViolation(isNight);
         if (isNight) {
             log.warn("夜间违规检测: plateNumber={}, time={}", record.getPlateNumber(), time);

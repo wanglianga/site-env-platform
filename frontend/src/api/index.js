@@ -78,6 +78,14 @@ export const api = {
   createWashRecord: (data) => request.post('/wash-records', data),
   confirmWash: (id) => request.put(`/wash-records/${id}/confirm`),
   deleteWashRecord: (id) => request.delete(`/wash-records/${id}`),
+
+  getNightExcavationApprovals: (params) => request.get('/night-excavation-approvals', { params }),
+  getNightExcavationApproval: (id) => request.get(`/night-excavation-approvals/${id}`),
+  createNightExcavationApproval: (data) => request.post('/night-excavation-approvals', data),
+  updateNightExcavationApproval: (id, data) => request.put(`/night-excavation-approvals/${id}`, data),
+  approveNightExcavation: (id, data) => request.put(`/night-excavation-approvals/${id}/approve`, data),
+  rejectNightExcavation: (id, data) => request.put(`/night-excavation-approvals/${id}/reject`, data),
+  deleteNightExcavationApproval: (id) => request.delete(`/night-excavation-approvals/${id}`),
 }
 
 export default request

@@ -13,6 +13,7 @@ import {
   MessageOutlined,
   ApartmentOutlined,
   ScheduleOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons'
 
 const { Header, Sider, Content } = Layout
@@ -23,6 +24,7 @@ const menuItems = [
   { key: '/vehicle-records', icon: <CarOutlined />, label: '车辆出入' },
   { key: '/vehicles', icon: <TruckOutlined />, label: '渣土车管理' },
   { key: '/wash-records', icon: <ThunderboltOutlined />, label: '冲洗记录' },
+  { key: '/night-excavation-approvals', icon: <SafetyCertificateOutlined />, label: '夜间出土审批' },
   { key: '/rectification-tasks', icon: <ExclamationCircleOutlined />, label: '整改任务' },
   { key: '/review-evidences', icon: <FileImageOutlined />, label: '复查证据' },
   { key: '/penalties', icon: <ExclamationOutlined />, label: '处罚管理' },

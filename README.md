@@ -186,6 +186,10 @@ npm run dev
 - `GET /api/dust-readings` - 扬尘读数列表
 - `GET /api/vehicle-records` - 车辆出入记录
 - `GET /api/wash-records` - 冲洗记录
+- `GET /api/night-excavation-approvals` - 夜间出土审批列表
+- `POST /api/night-excavation-approvals` - 提交夜间出土申请
+- `PUT /api/night-excavation-approvals/{id}/approve` - 审批通过
+- `PUT /api/night-excavation-approvals/{id}/reject` - 审批拒绝
 - `GET /api/rectification-tasks` - 整改任务
 - `GET /api/review-evidences` - 复查证据
 - `GET /api/penalties` - 处罚记录
